@@ -24,7 +24,7 @@
     text-align: center;
     box-shadow: 0 0 30px rgba(0,0,0,.6);
   }
-  h1 { margin-bottom: 16px; }
+  h1, h2 { margin-bottom: 16px; }
   input, select, button {
     width: 100%;
     padding: 12px;
@@ -52,6 +52,7 @@
 </head>
 <body>
 
+<!-- Tela de setup -->
 <div class="card" id="setup">
   <h1>Impostor Clash</h1>
   <label>Número de jogadores</label>
@@ -69,11 +70,18 @@
   <button onclick="startGame()">Iniciar</button>
 </div>
 
+<!-- Tela do jogo -->
 <div class="card hidden" id="game">
   <h2 id="playerName"></h2>
   <div class="reveal hidden" id="cardReveal"></div>
   <div class="hint">Arraste pra cima para revelar a carta</div>
   <button id="nextBtn" onclick="nextPlayer()">Próximo</button>
+</div>
+
+<!-- Tela que mostra quem começa e botão de revelar impostor -->
+<div class="card hidden" id="startScreen">
+  <h2 id="starterText"></h2>
+  <button id="revealBtn" onclick="revealImpostor()">Revelar Impostor</button>
   <div class="reveal hidden" id="impostorReveal"></div>
 </div>
 
@@ -101,10 +109,13 @@ let players=[], roles=[], index=0, starterIndex=0;
 const namesDiv = document.getElementById('names');
 const setupDiv = document.getElementById('setup');
 const gameDiv = document.getElementById('game');
+const startScreen = document.getElementById('startScreen');
 const playerName = document.getElementById('playerName');
 const cardReveal = document.getElementById('cardReveal');
-const impostorReveal = document.getElementById('impostorReveal');
 const nextBtn = document.getElementById('nextBtn');
+const starterText = document.getElementById('starterText');
+const revealBtn = document.getElementById('revealBtn');
+const impostorReveal = document.getElementById('impostorReveal');
 
 /* cria inputs de nome */
 document.getElementById('playerCount').addEventListener('change', e=>{
@@ -127,8 +138,8 @@ function startGame(){
   index=0;
   setupDiv.classList.add('hidden');
   gameDiv.classList.remove('hidden');
-  nextBtn.style.display='inline-block'; // mostra botão Próximo
-  impostorReveal.classList.add('hidden'); // esconde impostorReveal
+  nextBtn.style.display='inline-block';
+  impostorReveal.classList.add('hidden');
   showPlayer();
 }
 
@@ -143,27 +154,24 @@ function showPlayer(){
 function nextPlayer(){
   index++;
   if(index>=players.length){
-    // alerta quem começa
-    alert(`Todos já viram! Quem começa é: ${players[starterIndex]}`);
-
-    // esconde botão Próximo e mostra botão impostor
-    nextBtn.style.display='none';
-    impostorReveal.innerHTML=`<button onclick="revealImpostor()">Ver quem era o impostor</button>`;
-    impostorReveal.classList.remove('hidden');
+    // termina rodada, vai para tela de starter
+    gameDiv.classList.add('hidden');
+    starterText.innerText=`${players[starterIndex]} começa!`;
+    startScreen.classList.remove('hidden');
+    impostorReveal.classList.add('hidden');
     return;
   }
   showPlayer();
 }
 
-/* revela impostor e mostra botão voltar */
+/* revela impostor */
 function revealImpostor(){
   const impostorIndex=roles.indexOf('IMPOSTOR');
   if(impostorIndex!==-1){
-    impostorReveal.innerHTML=`
-      <strong>O impostor era: ${players[impostorIndex]}</strong>
+    impostorReveal.innerHTML=`<strong>O impostor era: ${players[impostorIndex]}</strong>
       <br><br>
-      <button onclick="resetGame()">Voltar ao menu</button>
-    `;
+      <button onclick="resetGame()">Voltar ao menu</button>`;
+    impostorReveal.classList.remove('hidden');
   }
 }
 
@@ -176,6 +184,7 @@ function resetGame(){
   cardReveal.classList.add('hidden');
   impostorReveal.innerHTML='';
   impostorReveal.classList.add('hidden');
+  startScreen.classList.add('hidden');
   gameDiv.classList.add('hidden');
   setupDiv.classList.remove('hidden');
 }

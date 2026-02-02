@@ -78,7 +78,7 @@
   <button id="nextBtn" onclick="nextPlayer()">Próximo</button>
 </div>
 
-<!-- Tela que mostra quem começa e botão de revelar impostor -->
+<!-- Tela de início da partida + revelação do impostor -->
 <div class="card hidden" id="startScreen">
   <h2 id="starterText"></h2>
   <button id="revealBtn" onclick="revealImpostor()">Revelar Impostor</button>
@@ -106,19 +106,19 @@ const clashCards = [
 
 let players=[], roles=[], index=0, starterIndex=0;
 
-const namesDiv = document.getElementById('names');
-const setupDiv = document.getElementById('setup');
-const gameDiv = document.getElementById('game');
-const startScreen = document.getElementById('startScreen');
-const playerName = document.getElementById('playerName');
-const cardReveal = document.getElementById('cardReveal');
-const nextBtn = document.getElementById('nextBtn');
-const starterText = document.getElementById('starterText');
-const revealBtn = document.getElementById('revealBtn');
-const impostorReveal = document.getElementById('impostorReveal');
+const namesDiv=document.getElementById('names');
+const setupDiv=document.getElementById('setup');
+const gameDiv=document.getElementById('game');
+const startScreen=document.getElementById('startScreen');
+const playerName=document.getElementById('playerName');
+const cardReveal=document.getElementById('cardReveal');
+const nextBtn=document.getElementById('nextBtn');
+const starterText=document.getElementById('starterText');
+const revealBtn=document.getElementById('revealBtn');
+const impostorReveal=document.getElementById('impostorReveal');
 
 /* cria inputs de nome */
-document.getElementById('playerCount').addEventListener('change', e=>{
+document.getElementById('playerCount').addEventListener('change',e=>{
   namesDiv.innerHTML='';
   for(let i=0;i<e.target.value;i++){
     const input=document.createElement('input');
@@ -154,7 +154,7 @@ function showPlayer(){
 function nextPlayer(){
   index++;
   if(index>=players.length){
-    // termina rodada, vai para tela de starter
+    // todos viram → vai para tela de quem começa
     gameDiv.classList.add('hidden');
     starterText.innerText=`${players[starterIndex]} começa!`;
     startScreen.classList.remove('hidden');
@@ -168,8 +168,7 @@ function nextPlayer(){
 function revealImpostor(){
   const impostorIndex=roles.indexOf('IMPOSTOR');
   if(impostorIndex!==-1){
-    impostorReveal.innerHTML=`<strong>O impostor era: ${players[impostorIndex]}</strong>
-      <br><br>
+    impostorReveal.innerHTML=`<strong>O impostor era: ${players[impostorIndex]}</strong><br><br>
       <button onclick="resetGame()">Voltar ao menu</button>`;
     impostorReveal.classList.remove('hidden');
   }

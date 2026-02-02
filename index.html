@@ -73,7 +73,7 @@
   <h2 id="playerName"></h2>
   <div class="reveal hidden" id="cardReveal"></div>
   <div class="hint">Arraste pra cima para revelar a carta</div>
-  <button onclick="nextPlayer()">Próximo</button>
+  <button id="nextBtn" onclick="nextPlayer()">Próximo</button>
   <div class="reveal hidden" id="impostorReveal"></div>
 </div>
 
@@ -104,12 +104,13 @@ const gameDiv = document.getElementById('game');
 const playerName = document.getElementById('playerName');
 const cardReveal = document.getElementById('cardReveal');
 const impostorReveal = document.getElementById('impostorReveal');
+const nextBtn = document.getElementById('nextBtn');
 
 /* cria inputs de nome */
-document.getElementById('playerCount').addEventListener('change', e => {
-  namesDiv.innerHTML = '';
+document.getElementById('playerCount').addEventListener('change', e=>{
+  namesDiv.innerHTML='';
   for(let i=0;i<e.target.value;i++){
-    const input = document.createElement('input');
+    const input=document.createElement('input');
     input.placeholder=`Nome do jogador ${i+1}`;
     namesDiv.appendChild(input);
   }
@@ -121,13 +122,13 @@ function startGame(){
   players=[...namesDiv.querySelectorAll('input')].map(i=>i.value.trim()||'Jogador');
   const card=clashCards[Math.floor(Math.random()*clashCards.length)];
   roles=players.map(()=>card);
-  if(players.length>1){
-    roles[Math.floor(Math.random()*players.length)]='IMPOSTOR';
-  }
+  if(players.length>1) roles[Math.floor(Math.random()*players.length)]='IMPOSTOR';
   starterIndex=Math.floor(Math.random()*players.length);
   index=0;
   setupDiv.classList.add('hidden');
   gameDiv.classList.remove('hidden');
+  nextBtn.style.display='inline-block'; // mostra botão Próximo
+  impostorReveal.classList.add('hidden'); // esconde impostorReveal
   showPlayer();
 }
 
@@ -142,10 +143,11 @@ function showPlayer(){
 function nextPlayer(){
   index++;
   if(index>=players.length){
-    // mostra alert de quem começa
+    // alerta quem começa
     alert(`Todos já viram! Quem começa é: ${players[starterIndex]}`);
-    
-    // agora mostra botão real para revelar o impostor
+
+    // esconde botão Próximo e mostra botão impostor
+    nextBtn.style.display='none';
     impostorReveal.innerHTML=`<button onclick="revealImpostor()">Ver quem era o impostor</button>`;
     impostorReveal.classList.remove('hidden');
     return;
@@ -153,11 +155,15 @@ function nextPlayer(){
   showPlayer();
 }
 
-/* revela o impostor */
+/* revela impostor e mostra botão voltar */
 function revealImpostor(){
   const impostorIndex=roles.indexOf('IMPOSTOR');
   if(impostorIndex!==-1){
-    impostorReveal.innerHTML=`<strong>O impostor era: ${players[impostorIndex]}</strong>`;
+    impostorReveal.innerHTML=`
+      <strong>O impostor era: ${players[impostorIndex]}</strong>
+      <br><br>
+      <button onclick="resetGame()">Voltar ao menu</button>
+    `;
   }
 }
 
@@ -174,7 +180,7 @@ function resetGame(){
   setupDiv.classList.remove('hidden');
 }
 
-/* swipe pra revelar */
+/* swipe pra revelar carta */
 let startY=0;
 gameDiv.addEventListener('touchstart',e=>{startY=e.touches[0].clientY;});
 gameDiv.addEventListener('touchend',e=>{

@@ -38,7 +38,6 @@
     background: #2563eb;
     color: white;
     font-weight: bold;
-    cursor: pointer;
   }
   button:active { transform: scale(.98); }
   .hidden { display: none; }
@@ -50,30 +49,37 @@
     font-size: 22px;
   }
   .hint { font-size: 14px; opacity: .7; margin-top: 10px; }
-  /* estilo do ícone de info */
+
+  /* Ícone de info */
   .info-icon {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-weight: bold;
-    background: #2563eb;
+    top: 12px;
+    right: 12px;
     width: 24px;
     height: 24px;
+    background: #2563eb;
+    color: #fff;
+    font-weight: bold;
     border-radius: 50%;
     text-align: center;
     line-height: 24px;
     cursor: pointer;
+    user-select: none;
+    font-family: Arial, sans-serif;
   }
+
+  /* Popup de info */
   .info-popup {
     position: absolute;
     top: 40px;
-    right: 10px;
+    right: 12px;
+    width: 250px;
     background: #1e293b;
-    padding: 15px;
+    padding: 12px;
     border-radius: 12px;
     font-size: 14px;
-    width: 250px;
-    z-index: 10;
+    z-index: 100;
+    text-align: left;
   }
 </style>
 </head>
@@ -81,6 +87,7 @@
 
 <!-- Tela de setup -->
 <div class="card" id="setup">
+  <!-- Ícone de info -->
   <div class="info-icon" onclick="toggleInfo()">i</div>
   <div class="info-popup hidden" id="infoPopup">
     <strong>Como Jogar - Impostor Clash Royale</strong><br>
@@ -93,6 +100,7 @@
     7. Volte ao menu para jogar novamente.<br>
     <em>Objetivo: se você for o IMPOSTOR, tente se infiltrar e enganar; se for um inocente, identifique o impostor.</em>
   </div>
+
   <h1>Impostor Clash</h1>
   <label>Número de jogadores</label>
   <select id="playerCount">
@@ -155,7 +163,6 @@ const nextBtn = document.getElementById('nextBtn');
 const starterText = document.getElementById('starterText');
 const revealBtn = document.getElementById('revealBtn');
 const impostorReveal = document.getElementById('impostorReveal');
-const infoPopup = document.getElementById('infoPopup');
 
 /* cria inputs de nome */
 document.getElementById('playerCount').addEventListener('change', e => {
@@ -167,11 +174,6 @@ document.getElementById('playerCount').addEventListener('change', e => {
   }
 });
 document.getElementById('playerCount').dispatchEvent(new Event('change'));
-
-/* toggle popup info */
-function toggleInfo(){
-  infoPopup.classList.toggle('hidden');
-}
 
 /* inicia jogo */
 function startGame(){
@@ -245,6 +247,12 @@ gameDiv.addEventListener('touchend', e => {
   const endY = e.changedTouches[0].clientY;
   if(startY - endY > 50){ cardReveal.classList.remove('hidden'); }
 });
+
+/* toggle info */
+function toggleInfo(){
+  const popup = document.getElementById('infoPopup');
+  popup.classList.toggle('hidden');
+}
 </script>
 </body>
 </html>

@@ -23,6 +23,7 @@
     max-width: 400px;
     text-align: center;
     box-shadow: 0 0 30px rgba(0,0,0,.6);
+    position: relative;
   }
   h1, h2 { margin-bottom: 16px; }
   input, select, button {
@@ -37,6 +38,7 @@
     background: #2563eb;
     color: white;
     font-weight: bold;
+    cursor: pointer;
   }
   button:active { transform: scale(.98); }
   .hidden { display: none; }
@@ -48,12 +50,49 @@
     font-size: 22px;
   }
   .hint { font-size: 14px; opacity: .7; margin-top: 10px; }
+  /* estilo do ícone de info */
+  .info-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-weight: bold;
+    background: #2563eb;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    cursor: pointer;
+  }
+  .info-popup {
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    width: 250px;
+    z-index: 10;
+  }
 </style>
 </head>
 <body>
 
 <!-- Tela de setup -->
 <div class="card" id="setup">
+  <div class="info-icon" onclick="toggleInfo()">i</div>
+  <div class="info-popup hidden" id="infoPopup">
+    <strong>Como Jogar - Impostor Clash Royale</strong><br>
+    1. Escolha o número de jogadores e digite os nomes.<br>
+    2. Clique em <strong>Iniciar</strong> para começar.<br>
+    3. Cada jogador verá secretamente sua carta (ou será o <strong>IMPOSTOR</strong>).<br>
+    4. Arraste a tela para cima para revelar sua carta.<br>
+    5. Depois que todos conferirem suas cartas, a tela mostrará quem começa.<br>
+    6. Clique em <strong>Revelar Impostor</strong> para descobrir quem era o impostor.<br>
+    7. Volte ao menu para jogar novamente.<br>
+    <em>Objetivo: se você for o IMPOSTOR, tente se infiltrar e enganar; se for um inocente, identifique o impostor.</em>
+  </div>
   <h1>Impostor Clash</h1>
   <label>Número de jogadores</label>
   <select id="playerCount">
@@ -116,6 +155,7 @@ const nextBtn = document.getElementById('nextBtn');
 const starterText = document.getElementById('starterText');
 const revealBtn = document.getElementById('revealBtn');
 const impostorReveal = document.getElementById('impostorReveal');
+const infoPopup = document.getElementById('infoPopup');
 
 /* cria inputs de nome */
 document.getElementById('playerCount').addEventListener('change', e => {
@@ -127,6 +167,11 @@ document.getElementById('playerCount').addEventListener('change', e => {
   }
 });
 document.getElementById('playerCount').dispatchEvent(new Event('change'));
+
+/* toggle popup info */
+function toggleInfo(){
+  infoPopup.classList.toggle('hidden');
+}
 
 /* inicia jogo */
 function startGame(){
@@ -155,7 +200,6 @@ function showPlayer(){
 function nextPlayer(){
   index++;
   if(index >= players.length){
-    // todos viram → vai para tela de quem começa
     gameDiv.classList.add('hidden');
     starterText.innerText = `${players[starterIndex]} começa!`;
     startScreen.classList.remove('hidden');
@@ -170,11 +214,8 @@ function nextPlayer(){
 function revealImpostor(){
   const impostorIndex = roles.indexOf('IMPOSTOR');
   if(impostorIndex !== -1){
-    // esconde quem começa e o botão
     starterText.classList.add('hidden');
     revealBtn.classList.add('hidden');
-
-    // mostra só o impostor
     impostorReveal.innerHTML = `<strong>O impostor era: ${players[impostorIndex]}</strong><br><br>
       <button onclick="resetGame()">Voltar ao menu</button>`;
     impostorReveal.classList.remove('hidden');

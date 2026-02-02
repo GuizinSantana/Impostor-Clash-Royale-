@@ -74,7 +74,29 @@
 </div>
 
 <script>
-const clashCards = [ /* lista intacta */ ];
+// Lista atualizada de cartas reais (2026)
+const clashCards = [
+  "Arqueiras","Bárbaros","Gigante","Mini P.E.K.K.A","Mosqueteira","Flechas","Bola de Fogo","Valquíria",
+  "Príncipe","Bebê Dragão","Exército de Esqueletos","Bruxa","Mago","Mago Elétrico","Golem","Corredor",
+  "Canhão","Torre Inferno","Dragão Infernal","Mega Cavaleiro","P.E.K.K.A","Balão","Mineiro","Lava Hound",
+  "Três Mosqueteiras","Lenhador","Executor","Bandida","Fantasma Real","Pescador","Caçador",
+  "Arqueiro Mágico","Gigante Elétrico","Cavaleiro Dourado","Rainha Arqueira","Rei Esqueleto",
+  "Espírito de Gelo","Espírito de Fogo","Espírito Elétrico","Espírito de Cura","Zap","Relâmpago",
+  "Veneno","Tornado","Fúria","Espelho","Clone","Barril de Goblins","Gangue de Goblins","Goblins",
+  "Goblins Lanceiros","Servos","Horda de Servos","Cemitério","Máquina Voadora","Cavaleiro",
+  "Aríete de Batalha","Carrinho de Canhão","Morteiro","X-Besta","Foguete","Tronco","Vinhas",
+  "Mago de Gelo","Eletrocutadores","Golem de Gelo","Mineiro Bombado","Barril de Esqueletos",
+  "Cabana de Goblins","Lápide","Bombardeiro","Bandida Líder","Máquina Goblin","Morcegos",
+  "Princesa","Goblinstein","Coletor de Elixir","Gigante Real","Tesla","Príncipe das Trevas",
+  "Jaula de Goblin","Golem de Elixir","Pequeno Príncipe","Bruxa Sombria","Bruxa Mãe",
+  "Domadora de Carneiro","Torre de Bombas","Destruidores de Muro","Goblin Gigante",
+  "Bárbaros de Elite","Dragão Elétrico","Curadora Guerreira","Esqueleto Gigante",
+  "Dragões Esqueletos","Mega Servo","Barril de Bárbaro","Sparky","Goblin com Dardo",
+  "Gelo","Recrutas Reais","Encomenda Real","Porcos Reais","Monge","Fênix","Cabana de Bárbaros",
+  "Fornalha","Bola de Neve","Lançador","Maldição Goblin","Guardas","Escavadeira de Goblins",
+  "Goblin Demolidor","Imperatriz Espiritual","Patifes","Gigante das Runas","Pirotécnica",
+  "Terremoto","Berseker","Arbusto Traiçoeiro","Vácuo"
+];
 
 let players = [];
 let roles = [];
@@ -82,19 +104,25 @@ let index = 0;
 let starterIndex = 0;
 
 const namesDiv = document.getElementById('names');
+const setupDiv = document.getElementById('setup');
+const gameDiv = document.getElementById('game');
+const playerName = document.getElementById('playerName');
+const cardReveal = document.getElementById('cardReveal');
 
 document.getElementById('playerCount').addEventListener('change', e => {
   namesDiv.innerHTML = '';
   for (let i = 0; i < e.target.value; i++) {
     const input = document.createElement('input');
-    input.placeholder = `Nome do jogador ${i+1}`;
+    input.placeholder = `Nome do jogador ${i + 1}`;
     namesDiv.appendChild(input);
   }
 });
 document.getElementById('playerCount').dispatchEvent(new Event('change'));
 
 function startGame() {
-  players = [...namesDiv.querySelectorAll('input')].map(i => i.value || 'Jogador');
+  players = [...namesDiv.querySelectorAll('input')]
+    .map(i => i.value.trim() || 'Jogador');
+
   const card = clashCards[Math.floor(Math.random() * clashCards.length)];
   roles = players.map(() => card);
 
@@ -105,132 +133,45 @@ function startGame() {
   starterIndex = Math.floor(Math.random() * players.length);
   index = 0;
 
-  document.getElementById('setup').classList.add('hidden');
-  document.getElementById('game').classList.remove('hidden');
+  setupDiv.classList.add('hidden');
+  gameDiv.classList.remove('hidden');
   showPlayer();
 }
 
 function showPlayer() {
-  document.getElementById('playerName').innerText = players[index];
-  document.getElementById('cardReveal').innerText = roles[index];
-  document.getElementById('cardReveal').classList.add('hidden');
+  playerName.innerText = players[index];
+  cardReveal.innerText = roles[index];
+  cardReveal.classList.add('hidden');
 }
 
-/* 🔴 ÚNICA FUNÇÃO ALTERADA */
 function nextPlayer() {
   index++;
+
   if (index >= players.length) {
     alert(`Todos já viram! Quem começa é: ${players[starterIndex]}`);
 
     index = 0;
-    document.getElementById('game').classList.add('hidden');
-    document.getElementById('setup').classList.remove('hidden');
-    document.getElementById('cardReveal').classList.add('hidden');
+    roles = [];
 
+    cardReveal.innerText = '';
+    cardReveal.classList.add('hidden');
+
+    gameDiv.classList.add('hidden');
+    setupDiv.classList.remove('hidden');
     return;
   }
+
   showPlayer();
 }
 
 let startY = 0;
-document.getElementById('game').addEventListener('touchstart', e => {
+gameDiv.addEventListener('touchstart', e => {
   startY = e.touches[0].clientY;
 });
-document.getElementById('game').addEventListener('touchend', e => {
+gameDiv.addEventListener('touchend', e => {
   const endY = e.changedTouches[0].clientY;
   if (startY - endY > 50) {
-    document.getElementById('cardReveal').classList.remove('hidden');
-  }
-});
-</script>
-</body>
-</html>
-<div class="card hidden" id="game">
-  <h2 id="playerName"></h2>
-  <div class="reveal hidden" id="cardReveal"></div>
-  <div class="hint">Arraste pra cima para revelar a carta</div>
-  <button onclick="nextPlayer()">Próximo</button>
-</div>
-
-<script>
-// Lista atualizada de cartas reais (2026)
-const clashCards = [
-  "Arqueiras", "Bárbaros", "Gigante", "Mini P.E.K.K.A", "Mosqueteira", "Flechas", "Bola de Fogo", "Valquíria", "Príncipe", "Bebê Dragão",
-  "Exército de Esqueletos", "Bruxa", "Mago", "Mago Elétrico", "Golem", "Corredor", "Canhão", "Torre Inferno", "Dragão Infernal",
-  "Mega Cavaleiro", "P.E.K.K.A", "Balão", "Mineiro", "Lava Hound", "Três Mosqueteiras", "Lenhador", "Executor", "Bandida", "Fantasma Real",
-  "Pescador", "Caçador", "Arqueiro Mágico", "Gigante Elétrico", "Cavaleiro Dourado", "Rainha Arqueira", "Rei Esqueleto",
-  "Espírito de Gelo", "Espírito de Fogo", "Espírito Elétrico", "Espírito de Cura", "Zap", "Relâmpago", "Veneno", "Tornado",
-  "Fúria", "Espelho", "Clone", "Barril de Goblins", "Gangue de Goblins", "Goblins", "Goblins Lanceiros", "Servos", "Horda de Servos",
-  "Cemitério", "Máquina Voadora", "Cavaleiro", "Aríete de Batalha", "Carrinho de Canhão", "Morteiro", "X-Besta", "Foguete", "Tronco", 
-  "Vinhas", "Mago de Gelo", "Eletrocutadores", "Golem de Gelo", "Mineiro Bombado", "Barril de Esqueletos", "Cabana de Goblins", "Lápide",
-  "Bombardeiro", "Bandida Líder", "Máquina Goblin", "Morcegos", "Princesa", "Goblinstein", "Coletor de Elixir", "Gigante Real", "Tesla",
-  "Príncipe das Trevas", "Jaula de Goblin", "Golem de Elixir", "Pequeno Príncipe", "Bruxa Sombria", "Bruxa Mãe", "Domadora de Carneiro",
-  "Torre de Bombas", "Destruidores de Muro", "Goblin Gigante", "Bárbaros de Elite", "Dragão Elétrico", "Curadora Guerreira", 
-  "Esqueleto Gigante", "Dragões Esqueletos", "Mega Servo", "Barril de Bárbaro", "Sparky", "Goblin com Dardo", "Gelo", "Recrutas Reais",
-  "Encomenda Real", "Porcos Reais", "Monge", "Fênix", "Cabana de Bárbaros", "Fornalha", "Bola de Neve", "Lançador", "Maldição Goblin",
-  "Guardas", "Escavadeira de Goblins", "Goblin Demolidor", "Imperatriz Espiritual", "Patifes", "Gigante das Runas", "Pirotécnica",
-  "Terremoto", "Berseker", "Arbusto Traiçoeiro", "Vácuo"
-];
-
-let players = [];
-let roles = [];
-let index = 0;
-let starterIndex = 0;
-
-const namesDiv = document.getElementById('names');
-
-document.getElementById('playerCount').addEventListener('change', e => {
-  namesDiv.innerHTML = '';
-  for (let i = 0; i < e.target.value; i++) {
-    const input = document.createElement('input');
-    input.placeholder = `Nome do jogador ${i+1}`;
-    namesDiv.appendChild(input);
-  }
-});
-document.getElementById('playerCount').dispatchEvent(new Event('change'));
-
-function startGame() {
-  players = [...namesDiv.querySelectorAll('input')].map(i => i.value || 'Jogador');
-  const card = clashCards[Math.floor(Math.random()*clashCards.length)];
-  roles = players.map(() => card);
-
-  if (players.length > 1) {
-    const impostor = Math.floor(Math.random()*players.length);
-    roles[impostor] = 'IMPOSTOR';
-  }
-
-  starterIndex = Math.floor(Math.random() * players.length);
-  index = 0;
-
-  document.getElementById('setup').classList.add('hidden');
-  document.getElementById('game').classList.remove('hidden');
-  showPlayer();
-}
-
-function showPlayer() {
-  document.getElementById('playerName').innerText = players[index];
-  document.getElementById('cardReveal').innerText = roles[index];
-  document.getElementById('cardReveal').classList.add('hidden');
-}
-
-function nextPlayer() {
-  index++;
-  if (index >= players.length) {
-    alert(`Todos já viram! Quem começa é: ${players[starterIndex]}`);
-    location.reload();
-    return;
-  }
-  showPlayer();
-}
-
-let startY = 0;
-document.getElementById('game').addEventListener('touchstart', e => {
-  startY = e.touches[0].clientY;
-});
-document.getElementById('game').addEventListener('touchend', e => {
-  const endY = e.changedTouches[0].clientY;
-  if (startY - endY > 50) {
-    document.getElementById('cardReveal').classList.remove('hidden');
+    cardReveal.classList.remove('hidden');
   }
 });
 </script>

@@ -80,10 +80,8 @@
 
 <!-- Tela de início da partida + revelação do impostor -->
 <div class="card hidden" id="startScreen">
-  <div id="starterContainer">
-    <h2 id="starterText"></h2>
-    <button id="revealBtn" onclick="revealImpostor()">Revelar Impostor</button>
-  </div>
+  <h2 id="starterText"></h2>
+  <button id="revealBtn" onclick="revealImpostor()">Revelar Impostor</button>
   <div class="reveal hidden" id="impostorReveal"></div>
 </div>
 
@@ -106,26 +104,25 @@ const clashCards = [
   "Terremoto","Berseker","Arbusto Traiçoeiro","Vácuo"
 ];
 
-let players=[], roles=[], index=0, starterIndex=0;
+let players = [], roles = [], index = 0, starterIndex = 0;
 
-const namesDiv=document.getElementById('names');
-const setupDiv=document.getElementById('setup');
-const gameDiv=document.getElementById('game');
-const startScreen=document.getElementById('startScreen');
-const starterContainer=document.getElementById('starterContainer');
-const playerName=document.getElementById('playerName');
-const cardReveal=document.getElementById('cardReveal');
-const nextBtn=document.getElementById('nextBtn');
-const starterText=document.getElementById('starterText');
-const revealBtn=document.getElementById('revealBtn');
-const impostorReveal=document.getElementById('impostorReveal');
+const namesDiv = document.getElementById('names');
+const setupDiv = document.getElementById('setup');
+const gameDiv = document.getElementById('game');
+const startScreen = document.getElementById('startScreen');
+const playerName = document.getElementById('playerName');
+const cardReveal = document.getElementById('cardReveal');
+const nextBtn = document.getElementById('nextBtn');
+const starterText = document.getElementById('starterText');
+const revealBtn = document.getElementById('revealBtn');
+const impostorReveal = document.getElementById('impostorReveal');
 
 /* cria inputs de nome */
-document.getElementById('playerCount').addEventListener('change',e=>{
-  namesDiv.innerHTML='';
-  for(let i=0;i<e.target.value;i++){
-    const input=document.createElement('input');
-    input.placeholder=`Nome do jogador ${i+1}`;
+document.getElementById('playerCount').addEventListener('change', e => {
+  namesDiv.innerHTML = '';
+  for(let i = 0; i < e.target.value; i++){
+    const input = document.createElement('input');
+    input.placeholder = `Nome do jogador ${i+1}`;
     namesDiv.appendChild(input);
   }
 });
@@ -133,36 +130,37 @@ document.getElementById('playerCount').dispatchEvent(new Event('change'));
 
 /* inicia jogo */
 function startGame(){
-  players=[...namesDiv.querySelectorAll('input')].map(i=>i.value.trim()||'Jogador');
-  const card=clashCards[Math.floor(Math.random()*clashCards.length)];
-  roles=players.map(()=>card);
-  if(players.length>1) roles[Math.floor(Math.random()*players.length)]='IMPOSTOR';
-  starterIndex=Math.floor(Math.random()*players.length);
-  index=0;
+  players = [...namesDiv.querySelectorAll('input')].map(i => i.value.trim() || 'Jogador');
+  const card = clashCards[Math.floor(Math.random() * clashCards.length)];
+  roles = players.map(() => card);
+  if(players.length > 1) roles[Math.floor(Math.random() * players.length)] = 'IMPOSTOR';
+  starterIndex = Math.floor(Math.random() * players.length);
+  index = 0;
   setupDiv.classList.add('hidden');
   gameDiv.classList.remove('hidden');
-  nextBtn.style.display='inline-block';
+  nextBtn.style.display = 'inline-block';
   impostorReveal.classList.add('hidden');
+  revealBtn.classList.remove('hidden');
   showPlayer();
 }
 
 /* mostra jogador atual */
 function showPlayer(){
-  playerName.innerText=players[index];
-  cardReveal.innerText=roles[index];
+  playerName.innerText = players[index];
+  cardReveal.innerText = roles[index];
   cardReveal.classList.add('hidden');
 }
 
 /* próximo jogador */
 function nextPlayer(){
   index++;
-  if(index>=players.length){
+  if(index >= players.length){
     // todos viram → vai para tela de quem começa
     gameDiv.classList.add('hidden');
-    starterText.innerText=`${players[starterIndex]} começa!`;
-    starterContainer.classList.remove('hidden');
+    starterText.innerText = `${players[starterIndex]} começa!`;
     startScreen.classList.remove('hidden');
     impostorReveal.classList.add('hidden');
+    revealBtn.classList.remove('hidden');
     return;
   }
   showPlayer();
@@ -170,12 +168,14 @@ function nextPlayer(){
 
 /* revela impostor */
 function revealImpostor(){
-  const impostorIndex=roles.indexOf('IMPOSTOR');
-  if(impostorIndex!==-1){
-    // esconde todo o container de início da partida
-    starterContainer.classList.add('hidden');
+  const impostorIndex = roles.indexOf('IMPOSTOR');
+  if(impostorIndex !== -1){
+    // esconde quem começa e o botão
+    starterText.classList.add('hidden');
+    revealBtn.classList.add('hidden');
 
-    impostorReveal.innerHTML=`<strong>O impostor era: ${players[impostorIndex]}</strong><br><br>
+    // mostra só o impostor
+    impostorReveal.innerHTML = `<strong>O impostor era: ${players[impostorIndex]}</strong><br><br>
       <button onclick="resetGame()">Voltar ao menu</button>`;
     impostorReveal.classList.remove('hidden');
   }
@@ -183,25 +183,26 @@ function revealImpostor(){
 
 /* reset */
 function resetGame(){
-  index=0;
-  starterIndex=0;
-  roles=[];
-  cardReveal.innerText='';
+  index = 0;
+  starterIndex = 0;
+  roles = [];
+  cardReveal.innerText = '';
   cardReveal.classList.add('hidden');
-  impostorReveal.innerHTML='';
+  impostorReveal.innerHTML = '';
   impostorReveal.classList.add('hidden');
-  starterContainer.classList.remove('hidden');
+  starterText.classList.remove('hidden');
+  revealBtn.classList.remove('hidden');
   startScreen.classList.add('hidden');
   gameDiv.classList.add('hidden');
   setupDiv.classList.remove('hidden');
 }
 
 /* swipe pra revelar carta */
-let startY=0;
-gameDiv.addEventListener('touchstart',e=>{startY=e.touches[0].clientY;});
-gameDiv.addEventListener('touchend',e=>{
-  const endY=e.changedTouches[0].clientY;
-  if(startY-endY>50){ cardReveal.classList.remove('hidden'); }
+let startY = 0;
+gameDiv.addEventListener('touchstart', e => { startY = e.touches[0].clientY; });
+gameDiv.addEventListener('touchend', e => {
+  const endY = e.changedTouches[0].clientY;
+  if(startY - endY > 50){ cardReveal.classList.remove('hidden'); }
 });
 </script>
 </body>

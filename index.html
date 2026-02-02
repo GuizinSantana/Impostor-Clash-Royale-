@@ -56,14 +56,14 @@
   <h1>Impostor Clash</h1>
   <label>Número de jogadores</label>
   <select id="playerCount">
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
-  <option value="7">7</option>
-  <option value="8">8</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
   </select>
   <div id="names"></div>
   <button onclick="startGame()">Iniciar</button>
@@ -74,6 +74,7 @@
   <div class="reveal hidden" id="cardReveal"></div>
   <div class="hint">Arraste pra cima para revelar a carta</div>
   <button onclick="nextPlayer()">Próximo</button>
+  <div class="reveal hidden" id="impostorReveal"></div>
 </div>
 
 <script>
@@ -106,6 +107,7 @@ const setupDiv = document.getElementById('setup');
 const gameDiv = document.getElementById('game');
 const playerName = document.getElementById('playerName');
 const cardReveal = document.getElementById('cardReveal');
+const impostorReveal = document.getElementById('impostorReveal');
 
 /* cria inputs de nome */
 document.getElementById('playerCount').addEventListener('change', e => {
@@ -151,11 +153,22 @@ function nextPlayer() {
 
   if (index >= players.length) {
     alert(`Todos já viram! Quem começa é: ${players[starterIndex]}`);
-    resetGame();
+    
+    // mostra botão para revelar impostor
+    impostorReveal.innerHTML = `<button onclick="revealImpostor()">Ver quem era o impostor</button>`;
+    impostorReveal.classList.remove('hidden');
     return;
   }
 
   showPlayer();
+}
+
+/* revela o impostor */
+function revealImpostor() {
+  const impostorIndex = roles.indexOf('IMPOSTOR');
+  if (impostorIndex !== -1) {
+    impostorReveal.innerHTML = `<strong>O impostor era: ${players[impostorIndex]}</strong>`;
+  }
 }
 
 /* função que reseta para próxima rodada */
@@ -166,6 +179,8 @@ function resetGame() {
 
   cardReveal.innerText = '';
   cardReveal.classList.add('hidden');
+  impostorReveal.innerHTML = '';
+  impostorReveal.classList.add('hidden');
 
   gameDiv.classList.add('hidden');
   setupDiv.classList.remove('hidden');

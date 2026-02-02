@@ -140,6 +140,7 @@ function startGame(){
   gameDiv.classList.remove('hidden');
   nextBtn.style.display='inline-block';
   impostorReveal.classList.add('hidden');
+  starterText.classList.add('hidden'); // esconde no começo
   showPlayer();
 }
 
@@ -157,6 +158,7 @@ function nextPlayer(){
     // todos viram → vai para tela de quem começa
     gameDiv.classList.add('hidden');
     starterText.innerText=`${players[starterIndex]} começa!`;
+    starterText.classList.remove('hidden');
     startScreen.classList.remove('hidden');
     impostorReveal.classList.add('hidden');
     return;
@@ -168,6 +170,9 @@ function nextPlayer(){
 function revealImpostor(){
   const impostorIndex=roles.indexOf('IMPOSTOR');
   if(impostorIndex!==-1){
+    // some texto de quem começa
+    starterText.classList.add('hidden');
+
     impostorReveal.innerHTML=`<strong>O impostor era: ${players[impostorIndex]}</strong><br><br>
       <button onclick="resetGame()">Voltar ao menu</button>`;
     impostorReveal.classList.remove('hidden');
